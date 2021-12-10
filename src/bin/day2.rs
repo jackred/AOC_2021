@@ -32,7 +32,7 @@ fn main() {
         .expect("Something went wrong reading the file");
     let lines: Vec<Commands> = contents.lines().map(|x| x.parse().unwrap()).collect();
     println!("part 1: {}", part_1(&lines));
-    println!("part 1: {}", part_2(&lines));    
+    println!("part 2: {}", part_2(&lines));    
 }
 
 
@@ -41,9 +41,9 @@ fn part_1(input: &Vec<Commands>) -> i32 {
     let mut y = 0;
     for i in input {
 	match i {
-	    Commands::Up(i) => y -= i,
-	    Commands::Forward(i) => x += i,
-	    Commands::Down(i) => y += i
+	    Commands::Up(j) => y -= j,
+	    Commands::Forward(j) => x += j,
+	    Commands::Down(j) => y += j
 	}
     }
     return x * y
@@ -55,12 +55,12 @@ fn part_2(input: &Vec<Commands>) -> i32 {
     let mut a = 0;
     for i in input {
 	match i {
-	    Commands::Up(i) => a -= i,
-	    Commands::Forward(i) => {
-		x += i;
-		y += a * i
+	    Commands::Up(j) => a -= j,
+	    Commands::Forward(j) => {
+		x += j;
+		y += a * j
 	    },
-	    Commands::Down(i) => a += i
+	    Commands::Down(j) => a += j
 	}
     }
     return x * y
