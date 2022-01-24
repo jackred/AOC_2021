@@ -31,7 +31,7 @@ fn main() {
     });
     let seq: Vec<u32> = seq.split(",").map(|x| x.parse::<u32>().unwrap()).collect::<Vec<u32>>();
     println!("part 1: {}", part_1(&lines, &columns,  &seq));
-    println!("part 2: {}", part_2(&lines));  
+    println!("part 2: {}", part_2(&lines, &columns,  &seq));
 }
 
 
@@ -64,6 +64,41 @@ fn part_1(lines:  &Vec<HashSet<u32>>, columns: &Vec<HashSet<u32>>, seq: &Vec<u32
     winner.difference(&hash).into_iter().fold(0, |acc, x| acc + x) * last
 }
 
-fn part_2(input:  &Vec<HashSet<u32>>) -> i32 {
-    0
+fn part_2(lines: &Vec<HashSet<u32>>, columns: &Vec<HashSet<u32>>, seq: &Vec<u32>) -> u32 {
+    let mut hash: HashSet<u32> = HashSet::new();
+    let mut found: usize = 0;
+    'outer: for i in seq.iter().rev() {
+	hash.insert(*i);
+	for j in (5..lines.len()).step_by(5).rev() {
+	    let b1 = lines[j-5..j].iter().all(|x| hash.intersection(x).count() >= 1);
+	    let b2 = columns[j-5..j].iter().all(|x| hash.intersection(x).count() >= 1);
+	    if b1 && b2 {
+		println!("j {}", j);
+		found = j;
+		lines[j-5..j].iter().for_each(|x| println!("{:?}", x));
+		columns[j-5..j].iter().for_each(|x| println!("{:?}", x));
+		println!("hash {:?}", hash);
+		break 'outer;
+	    }
+	}
+    }
+    let mut f_lines = vec![HashSet::new(); 5]; 
+    f_lines.clone_from_slice(&lines[found-5..found]);
+    let mut f_cols = vec![HashSet::new(); 5]; 
+    f_cols.clone_from_slice(&columns[found-5..found]);
+    let res = seq.iter().find(|x| {
+	let b1 = f_lines.iter_mut().map(|y| {
+	    (y).remove(x);
+	    y.len() == 0
+	}).fold(false, |acc, b| acc || b);
+	let b2 = f_cols.iter_mut().map(|y| {
+	    (y).remove(x);
+	    y.len() == 0
+	}).fold(false, |acc, b| acc || b);
+	b1 || b2
+    }).unwrap();
+    println!("{:?}", f_cols);
+    println!("{:?}", f_lines);
+    println!("res {}", res);
+    f_cols.iter().fold(0, |acc, x| x.iter().sum::<u32>() + acc) * res
 }
