@@ -73,11 +73,7 @@ fn part_2(lines: &Vec<HashSet<u32>>, columns: &Vec<HashSet<u32>>, seq: &Vec<u32>
 	    let b1 = lines[j-5..j].iter().all(|x| hash.intersection(x).count() >= 1);
 	    let b2 = columns[j-5..j].iter().all(|x| hash.intersection(x).count() >= 1);
 	    if b1 && b2 {
-		println!("j {}", j);
 		found = j;
-		lines[j-5..j].iter().for_each(|x| println!("{:?}", x));
-		columns[j-5..j].iter().for_each(|x| println!("{:?}", x));
-		println!("hash {:?}", hash);
 		break 'outer;
 	    }
 	}
@@ -97,8 +93,5 @@ fn part_2(lines: &Vec<HashSet<u32>>, columns: &Vec<HashSet<u32>>, seq: &Vec<u32>
 	}).fold(false, |acc, b| acc || b);
 	b1 || b2
     }).unwrap();
-    println!("{:?}", f_cols);
-    println!("{:?}", f_lines);
-    println!("res {}", res);
     f_cols.iter().fold(0, |acc, x| x.iter().sum::<u32>() + acc) * res
 }
