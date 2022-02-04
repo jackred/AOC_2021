@@ -80,7 +80,7 @@ fn main() {
     maxi.x += 1;
     maxi.y += 1;
     println!("part 1: {}", part_1(&input, &maxi));
-    println!("part 2: {}", part_2());
+    println!("part 2: {}", part_2(&input, &maxi));
 }
 
 
@@ -105,6 +105,27 @@ fn part_1(input: &Vec<Line>, maxi: &Coord) -> usize {
 }
 
 
-fn part_2() -> u32 {
-    0
+fn part_2(input: &Vec<Line>, maxi: &Coord) -> usize {
+    let mut grid: Vec<Vec<usize>> = vec![vec![0; maxi.x as usize]; maxi.y as usize];
+    input.iter().for_each(|e| {
+	match e.state {
+	    LineState::Horizontal => {
+		let a = min(e.start.x, e.end.x);
+		let b = max(e.start.x, e.end.x);
+		(a..=b).for_each(|i| grid[e.start.y][i]+=1)
+	    },
+	    LineState::Vertical => {
+		let a = min(e.start.y, e.end.y);
+		let b = max(e.start.y, e.end.y);
+		(a..=b).for_each(|i| grid[i][e.start.x]+=1)
+	    },
+	    LineState::Diagonal => {
+		let diff = (e.start.x as isize - e.end.x as isize).abs();
+		let x_inc = if e.start.x > e.end.x {-1} else {1};
+		let y_inc = if e.start.y > e.end.y {-1} else {1};
+		(0..=diff).for_each(|i: isize| grid[(e.start.y as isize + i*y_inc) as usize][(e.start.x as isize + i*x_inc) as usize]+=1)
+	    }
+	}
+    });
+    grid.iter().fold(0, |acc, x| acc + x.iter().filter(|y| {**y >= 2}).count())    
 }
