@@ -31,7 +31,19 @@ fn part_1(mut input: Vec<isize>) -> usize {
 
 
 fn part_2(input: Vec<isize>) -> usize {
-    9
+    let mut new: Vec<usize> = input.iter().fold(vec![0;9], |mut acc, x| {
+	acc[*x as usize] += 1;
+	acc
+    });
+    (0..256).for_each(|_| {
+	let spawn = new[0];
+	(0..8).for_each(|y| {
+	    new[y] = new[y+1]
+	});
+	new[8] = spawn;
+	new[6] += spawn;
+    });
+    new.iter().sum::<usize>()
 }
 
 
